@@ -118,15 +118,27 @@ def submit(token):
 
 
 def notify(title, content):
-    tok = os.environ.get("PUSHPLUS_TOKEN")
-    if not tok:
-        print("(未配置 PUSHPLUS_TOKEN，跳过推送)")
+    """QQ 邮箱 SMTP 推送（给自己发信；未配置则跳过）。"""
+    user = os.environ.get("SMTP_USER")
+    pwd = os.environ.get("SMTP_PASS")
+    if not user or not pwd:
+        print("(未配置 SMTP_USER/SMTP_PASS，跳过推送)")
         return
+    import smtplib
+    from email.header import Header
+    from email.mime.text import MIMEText
+
+    msg = MIMEText(content, "plain", "utf-8")
+    msg["Subject"] = Header(title, "utf-8")
+    msg["From"] = user
+    msg["To"] = user
     try:
-        requests.post("https://www.pushplus.plus/send",
-                      json={"token": tok, "title": title, "content": content}, timeout=10)
+        with smtplib.SMTP_SSL("smtp.qq.com", 465, timeout=15) as s:
+            s.login(user, pwd)
+            s.sendmail(user, [user], msg.as_string())
+        print(f"已发送提醒邮件到 {user}")
     except Exception as e:
-        print(f"pushplus 发送失败: {e}")
+        print(f"邮件发送失败: {e}")
 
 
 def main():
