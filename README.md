@@ -23,7 +23,8 @@
 | 名称 | 内容 |
 |---|---|
 | `QBS_TOKEN` | 小程序请求头 Authorization 的值（过期后按下面步骤刷新） |
-| `PUSHPLUS_TOKEN` | pushplus.plus 的 token（失败推送，可选但强烈建议） |
+| `SMTP_USER` | QQ 邮箱地址（发件人=收件人，失败提醒发到这里） |
+| `SMTP_PASS` | QQ 邮箱 SMTP 授权码（设置 → 账户 → 开启 SMTP 服务时生成，不是 QQ 密码） |
 
 ## token 过期后怎么刷新（约 2 分钟）
 
