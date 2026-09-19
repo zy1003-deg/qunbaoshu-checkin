@@ -8,7 +8,8 @@ on:
     - cron: '40 12 * * *'
   workflow_dispatch:
 
-permissions: {}
+permissions:
+  contents: read
 
 concurrency:
   group: checkin
