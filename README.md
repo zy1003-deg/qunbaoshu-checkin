@@ -26,13 +26,13 @@
 | `SMTP_USER` | QQ 邮箱地址（发件人=收件人，失败提醒发到这里） |
 | `SMTP_PASS` | QQ 邮箱 SMTP 授权码（设置 → 账户 → 开启 SMTP 服务时生成，不是 QQ 密码） |
 
-## token 过期后怎么刷新（实测有效期约 48~72 小时，隔两天刷一次）
+## token 过期后怎么刷新（推荐：网页版扫码，最省事）
 
-**双击桌面「打卡token一键刷新.bat」** → 打开电脑微信进「群报数」任意页面（打卡页即可，
-原本开着就先关掉重开）→ 看到窗口显示 `[OK] token 已验证并同步到 GitHub Secrets` 即完成。
-脚本会自动：抓 token → 调接口验证 → 更新 GitHub Secret 和本地 secrets.local.json → 恢复原代理。
+1. 让 ZCode 用受控浏览器打开 https://h5.qun100.com/#/pages/record/main
+2. 页面跳到登录页后，手机微信扫码
+3. ZCode 从页面 localStorage 读出新 token（键 `productionwxLoginAccessToken`）并自动更新 GitHub Secret
 
-手动兜底（bat 失败时）：跑 `python refresh_token.py`；再不行用老办法（打卡抓包-开始/结束.bat + extract.py）。
+（旧办法仍可用：双击桌面「打卡token一键刷新.bat」抓小程序包。）
 
 ## 提醒邮件规则
 
