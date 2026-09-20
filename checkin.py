@@ -155,6 +155,8 @@ def main():
             done, _ = checked_in_today(token)
             if done:
                 log("打卡成功，回查确认 ✓")
+                notify("打卡成功（自动提交）",
+                       "今天的签到打卡已由脚本自动提交并回查确认。此邮件仅在脚本实际提交的日子发送。")
                 return 0
             raise RuntimeError("提交后校验未通过（currNormalSize 仍为 0）")
         except Exception as e:
