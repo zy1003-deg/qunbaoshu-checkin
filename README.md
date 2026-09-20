@@ -26,13 +26,19 @@
 | `SMTP_USER` | QQ 邮箱地址（发件人=收件人，失败提醒发到这里） |
 | `SMTP_PASS` | QQ 邮箱 SMTP 授权码（设置 → 账户 → 开启 SMTP 服务时生成，不是 QQ 密码） |
 
-## token 过期后怎么刷新（约 2 分钟）
+## token 过期后怎么刷新（实测有效期约 48~72 小时，隔两天刷一次）
 
-1. 双击桌面「打卡抓包-开始」
-2. 电脑微信打开群报数打卡页（不必提交，加载即可）
-3. 双击「打卡抓包-结束」
-4. 项目目录运行 `python extract.py`，从输出里找新的 `Authorization` 值，
-   更新 GitHub Secret `QBS_TOKEN`（`gh secret set QBS_TOKEN -R zy1003-deg/qunbaoshu-checkin`）
+**双击桌面「打卡token一键刷新.bat」** → 打开电脑微信进「群报数」任意页面（打卡页即可，
+原本开着就先关掉重开）→ 看到窗口显示 `[OK] token 已验证并同步到 GitHub Secrets` 即完成。
+脚本会自动：抓 token → 调接口验证 → 更新 GitHub Secret 和本地 secrets.local.json → 恢复原代理。
+
+手动兜底（bat 失败时）：跑 `python refresh_token.py`；再不行用老办法（打卡抓包-开始/结束.bat + extract.py）。
+
+## 提醒邮件规则
+
+- **打卡成功**（脚本实际提交的日子）：收到「打卡成功（自动提交）」邮件
+- **连续失败 3 次**：收到「打卡失败，请手动补卡」邮件，当天 22:30 前手动打卡
+- 手动打过卡的日子：不发邮件（脚本检测到已打卡直接跳过）
 
 ## 表单被老师改了怎么办
 
