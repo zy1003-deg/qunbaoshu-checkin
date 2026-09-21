@@ -86,6 +86,17 @@ def current_form_version(token):
     return d["data"]["version"]
 
 
+def token_valid(token):
+    """token 是否仍有效（用一次只读请求探测）。"""
+    try:
+        r = requests.get(f"{BASE}/v1/{FORM_ID}/form_data/last",
+                         headers=api(token), timeout=20,
+                         proxies={"http": None, "https": None})
+        return r.status_code == 200 and r.json().get("code") == 0
+    except Exception:
+        return False
+
+
 def submit(token):
     version = current_form_version(token)
     body = {
@@ -122,7 +133,12 @@ def notify(title, content):
     user = os.environ.get("SMTP_USER")
     pwd = os.environ.get("SMTP_PASS")
     if not user or not pwd:
-        print("(未配置 SMTP_USER/SMTP_PASS，跳过推送)")
+        path = os.path.join(HERE, "secrets.local.json")
+        if os.path.exists(path):
+            d = json.load(open(path, encoding="utf-8"))
+            user, pwd = d.get("smtp_user"), d.get("smtp_pass")
+    if not user or not pwd:
+        print("(未配置 SMTP，跳过推送)")
         return
     import smtplib
     from email.header import Header
